@@ -1,0 +1,77 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "routeTables_RT_43_name": {
+            "defaultValue": "RT-43",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('routeTables_RT_43_name')]",
+            "location": "canadaeast",
+            "tags": {
+                "DeploymentId": "634377",
+                "LaunchId": "24248",
+                "LaunchType": "ON_DEMAND_LAB",
+                "TemplateId": "4678",
+                "TenantId": "353"
+            },
+            "properties": {
+                "disableBgpRoutePropagation": true,
+                "routes": [
+                    {
+                        "name": "Server-43",
+                        "properties": {
+                            "addressPrefix": "172.17.43.32/27",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "192.168.43.36",
+                            "hasBgpOverride": false
+                        }
+                    },
+                    {
+                        "name": "Student-634377",
+                        "properties": {
+                            "addressPrefix": "10.19.54.0/24",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "192.168.43.36",
+                            "hasBgpOverride": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('routeTables_RT_43_name'), '/Server-43')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_RT_43_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "172.17.43.32/27",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "192.168.43.36",
+                "hasBgpOverride": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables/routes",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('routeTables_RT_43_name'), '/Student-634377')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_RT_43_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.19.54.0/24",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "192.168.43.36",
+                "hasBgpOverride": false
+            }
+        }
+    ]
+}

@@ -1,0 +1,306 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "labs_csn500_43_dtl_name": {
+            "defaultValue": "csn500-43-dtl",
+            "type": "String"
+        },
+        "virtualNetworks_Router_43_externalid": {
+            "defaultValue": "/subscriptions/bd627181-5ddb-4bb6-b03f-5297c3be4e1e/resourceGroups/Student-RG-634377/providers/Microsoft.Network/virtualNetworks/Router-43",
+            "type": "String"
+        },
+        "virtualNetworks_Server_43_externalid": {
+            "defaultValue": "/subscriptions/bd627181-5ddb-4bb6-b03f-5297c3be4e1e/resourceGroups/Student-RG-634377/providers/Microsoft.Network/virtualNetworks/Server-43",
+            "type": "String"
+        },
+        "virtualNetworks_Student_634377_vnet_externalid": {
+            "defaultValue": "/subscriptions/bd627181-5ddb-4bb6-b03f-5297c3be4e1e/resourceGroups/Student-RG-634377/providers/Microsoft.Network/virtualNetworks/Student-634377-vnet",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.devtestlab/labs",
+            "apiVersion": "2018-09-15",
+            "name": "[parameters('labs_csn500_43_dtl_name')]",
+            "location": "canadaeast",
+            "tags": {
+                "DeploymentId": "634377",
+                "LaunchId": "24248",
+                "LaunchType": "ON_DEMAND_LAB",
+                "TemplateId": "4678",
+                "TenantId": "353"
+            },
+            "properties": {
+                "labStorageType": "Premium",
+                "mandatoryArtifactsResourceIdsLinux": [],
+                "mandatoryArtifactsResourceIdsWindows": [],
+                "premiumDataDisks": "Disabled",
+                "environmentPermission": "Reader",
+                "announcement": {
+                    "enabled": "Disabled",
+                    "expired": false
+                },
+                "support": {
+                    "enabled": "Disabled"
+                }
+            }
+        },
+        {
+            "type": "microsoft.devtestlab/labs/artifactsources",
+            "apiVersion": "2018-09-15",
+            "name": "[concat(parameters('labs_csn500_43_dtl_name'), '/public environment repo')]",
+            "dependsOn": [
+                "[resourceId('microsoft.devtestlab/labs', parameters('labs_csn500_43_dtl_name'))]"
+            ],
+            "properties": {
+                "displayName": "Public Environment Repo",
+                "uri": "https://github.com/Azure/azure-devtestlab.git",
+                "sourceType": "GitHub",
+                "armTemplateFolderPath": "/Environments",
+                "branchRef": "master",
+                "status": "Enabled"
+            }
+        },
+        {
+            "type": "microsoft.devtestlab/labs/artifactsources",
+            "apiVersion": "2018-09-15",
+            "name": "[concat(parameters('labs_csn500_43_dtl_name'), '/public repo')]",
+            "dependsOn": [
+                "[resourceId('microsoft.devtestlab/labs', parameters('labs_csn500_43_dtl_name'))]"
+            ],
+            "properties": {
+                "displayName": "Public Artifact Repo",
+                "uri": "https://github.com/Azure/azure-devtestlab.git",
+                "sourceType": "GitHub",
+                "folderPath": "/Artifacts",
+                "branchRef": "master",
+                "status": "Enabled"
+            }
+        },
+        {
+            "type": "microsoft.devtestlab/labs/schedules",
+            "apiVersion": "2018-09-15",
+            "name": "[concat(parameters('labs_csn500_43_dtl_name'), '/labvmsshutdown')]",
+            "location": "canadaeast",
+            "dependsOn": [
+                "[resourceId('microsoft.devtestlab/labs', parameters('labs_csn500_43_dtl_name'))]"
+            ],
+            "properties": {
+                "status": "Enabled",
+                "taskType": "LabVmsShutdownTask",
+                "dailyRecurrence": {
+                    "time": "1900"
+                },
+                "timeZoneId": "Eastern Standard Time",
+                "notificationSettings": {
+                    "status": "Disabled",
+                    "timeInMinutes": 30
+                }
+            }
+        },
+        {
+            "type": "microsoft.devtestlab/labs/users",
+            "apiVersion": "2018-09-15",
+            "name": "[concat(parameters('labs_csn500_43_dtl_name'), '/4cca361c-9685-4f74-86d7-f96dbaea3928')]",
+            "dependsOn": [
+                "[resourceId('microsoft.devtestlab/labs', parameters('labs_csn500_43_dtl_name'))]"
+            ],
+            "properties": {
+                "identity": {
+                    "tenantId": "ed27b597-cea0-4942-8c6f-40e6a78bf47d",
+                    "objectId": "4cca361c-9685-4f74-86d7-f96dbaea3928",
+                    "appId": "1a14be2a-e903-4cec-99cf-b2e209259a0f"
+                }
+            }
+        },
+        {
+            "type": "microsoft.devtestlab/labs/virtualnetworks",
+            "apiVersion": "2018-09-15",
+            "name": "[concat(parameters('labs_csn500_43_dtl_name'), '/router-43')]",
+            "dependsOn": [
+                "[resourceId('microsoft.devtestlab/labs', parameters('labs_csn500_43_dtl_name'))]"
+            ],
+            "properties": {
+                "allowedSubnets": [
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Router_43_externalid'), '/subnets/SN1')]",
+                        "labSubnetName": "SN1",
+                        "allowPublicIp": "Deny"
+                    }
+                ],
+                "externalProviderResourceId": "[parameters('virtualNetworks_Router_43_externalid')]",
+                "subnetOverrides": [
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Router_43_externalid'), '/subnets/SN1')]",
+                        "labSubnetName": "SN1",
+                        "useInVmCreationPermission": "Allow",
+                        "usePublicIpAddressPermission": "Deny"
+                    },
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Router_43_externalid'), '/subnets/SN2')]",
+                        "labSubnetName": "SN2",
+                        "useInVmCreationPermission": "Deny",
+                        "usePublicIpAddressPermission": "Deny",
+                        "sharedPublicIpAddressConfiguration": {
+                            "allowedPorts": [
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 3389
+                                },
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 22
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Router_43_externalid'), '/subnets/SN3')]",
+                        "labSubnetName": "SN3",
+                        "useInVmCreationPermission": "Deny",
+                        "usePublicIpAddressPermission": "Deny",
+                        "sharedPublicIpAddressConfiguration": {
+                            "allowedPorts": [
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 3389
+                                },
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 22
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Router_43_externalid'), '/subnets/SN4')]",
+                        "labSubnetName": "SN4",
+                        "useInVmCreationPermission": "Deny",
+                        "usePublicIpAddressPermission": "Deny",
+                        "sharedPublicIpAddressConfiguration": {
+                            "allowedPorts": [
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 3389
+                                },
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 22
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "microsoft.devtestlab/labs/virtualnetworks",
+            "apiVersion": "2018-09-15",
+            "name": "[concat(parameters('labs_csn500_43_dtl_name'), '/server-43')]",
+            "dependsOn": [
+                "[resourceId('microsoft.devtestlab/labs', parameters('labs_csn500_43_dtl_name'))]"
+            ],
+            "properties": {
+                "allowedSubnets": [
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Server_43_externalid'), '/subnets/SN1')]",
+                        "labSubnetName": "SN1",
+                        "allowPublicIp": "Deny"
+                    }
+                ],
+                "externalProviderResourceId": "[parameters('virtualNetworks_Server_43_externalid')]",
+                "subnetOverrides": [
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Server_43_externalid'), '/subnets/SN2')]",
+                        "labSubnetName": "SN2",
+                        "useInVmCreationPermission": "Deny",
+                        "usePublicIpAddressPermission": "Deny",
+                        "sharedPublicIpAddressConfiguration": {
+                            "allowedPorts": [
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 3389
+                                },
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 22
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Server_43_externalid'), '/subnets/SN3')]",
+                        "labSubnetName": "SN3",
+                        "useInVmCreationPermission": "Deny",
+                        "usePublicIpAddressPermission": "Deny",
+                        "sharedPublicIpAddressConfiguration": {
+                            "allowedPorts": [
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 3389
+                                },
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 22
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Server_43_externalid'), '/subnets/SN4')]",
+                        "labSubnetName": "SN4",
+                        "useInVmCreationPermission": "Deny",
+                        "usePublicIpAddressPermission": "Deny",
+                        "sharedPublicIpAddressConfiguration": {
+                            "allowedPorts": [
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 3389
+                                },
+                                {
+                                    "transportProtocol": "Tcp",
+                                    "backendPort": 22
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Server_43_externalid'), '/subnets/SN1')]",
+                        "labSubnetName": "SN1",
+                        "useInVmCreationPermission": "Allow",
+                        "usePublicIpAddressPermission": "Deny"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "microsoft.devtestlab/labs/virtualnetworks",
+            "apiVersion": "2018-09-15",
+            "name": "[concat(parameters('labs_csn500_43_dtl_name'), '/student-634377-vnet')]",
+            "dependsOn": [
+                "[resourceId('microsoft.devtestlab/labs', parameters('labs_csn500_43_dtl_name'))]"
+            ],
+            "properties": {
+                "allowedSubnets": [
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Student_634377_vnet_externalid'), '/subnets/Virtual-Desktop-Client')]",
+                        "labSubnetName": "Virtual-Desktop-Client",
+                        "allowPublicIp": "Deny"
+                    }
+                ],
+                "externalProviderResourceId": "[parameters('virtualNetworks_Student_634377_vnet_externalid')]",
+                "subnetOverrides": [
+                    {
+                        "resourceId": "[concat(parameters('virtualNetworks_Student_634377_vnet_externalid'), '/subnets/Virtual-Desktop-Client')]",
+                        "labSubnetName": "Virtual-Desktop-Client",
+                        "useInVmCreationPermission": "Allow",
+                        "usePublicIpAddressPermission": "Deny"
+                    }
+                ]
+            }
+        }
+    ]
+}
