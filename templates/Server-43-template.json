@@ -31,7 +31,7 @@
                     {
                         "name": "SN1",
                         "properties": {
-                            "addressPrefix": "172.17.43.32/27"
+                            "addressPrefix": "172.17.43.32/27",
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
                             "privateLinkServiceNetworkPolicies": "Enabled"
