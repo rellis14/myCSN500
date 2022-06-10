@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "labs_csn500_43_dtl_name": {
-            "defaultValue": "csn500-43-dtl",
+            "defaultValue": "CSN500-43-DTL",
             "type": "String"
         },
         "virtualNetworks_Router_43_externalid": {
