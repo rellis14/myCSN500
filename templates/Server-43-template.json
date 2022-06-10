@@ -29,6 +29,15 @@
                 },
                 "subnets": [
                     {
+                        "name": "SN1",
+                        "properties": {
+                            "addressPrefix": "172.17.43.32/27"
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
                         "name": "SN2",
                         "properties": {
                             "addressPrefix": "172.17.43.64/27",
@@ -54,18 +63,6 @@
                             "privateEndpointNetworkPolicies": "Enabled",
                             "privateLinkServiceNetworkPolicies": "Enabled"
                         }
-                    },
-                    {
-                        "name": "SN1",
-                        "properties": {
-                            "addressPrefix": "172.17.43.32/27",
-                            "routeTable": {
-                                "id": "[parameters('routeTables_RT_43_externalid')]"
-                            },
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
                     }
                 ],
                 "enableDdosProtection": false
@@ -80,9 +77,6 @@
             ],
             "properties": {
                 "addressPrefix": "172.17.43.32/27",
-                "routeTable": {
-                    "id": "[parameters('routeTables_RT_43_externalid')]"
-                },
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
                 "privateLinkServiceNetworkPolicies": "Enabled"
