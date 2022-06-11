@@ -19,7 +19,8 @@
       "defaultValue": "rellis14"
     },
     "password": {
-      "type": "securestring"
+      "type": "string",
+	  "defaultValue": "P@ssw0rd"
     }
   },
   "variables": {
